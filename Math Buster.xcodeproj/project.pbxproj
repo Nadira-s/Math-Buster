@@ -30,10 +30,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		534DD74D2E8FB07A00A1B367 /* Exceptions for "Math Buster" folder in "Math Buster" target */ = {
+		534DD75F2E8FB49F00A1B367 /* Exceptions for "Math Buster" folder in "Math Buster" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = 534DD7242E8FB07900A1B367 /* Math Buster */;
 		};
@@ -43,7 +43,7 @@
 		534DD7272E8FB07900A1B367 /* Math Buster */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				534DD74D2E8FB07A00A1B367 /* Exceptions for "Math Buster" folder in "Math Buster" target */,
+				534DD75F2E8FB49F00A1B367 /* Exceptions for "Math Buster" folder in "Math Buster" target */,
 			);
 			path = "Math Buster";
 			sourceTree = "<group>";
@@ -290,7 +290,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Math Buster/Info.plist";
+				INFOPLIST_FILE = "Math Buster/App/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -317,7 +317,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Math Buster/Info.plist";
+				INFOPLIST_FILE = "Math Buster/App/Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
