@@ -20,10 +20,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var restartButton: UIButton!
     
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
     var timer: Timer?
     var countDown: Int = 30
     var result: Double?
     var score: Int = 0
+    var ranges = [0...9, 10...99, 100...999]
+    var scoreAmount = [1, 2, 3]
+    
+    var navigationBarPreviousTintColor: UIColor?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +37,11 @@ class ViewController: UIViewController {
         generateProblem()
         
     }
+    override func viewWillAppear(_ animated: Bool) {
+        
+        navigationBarPreviousTintColor = navigationController?.navigationBar.tintColor
+        navigationController?.navigationBar.tintColor = .white
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -39,21 +49,30 @@ class ViewController: UIViewController {
         scheduleTimer()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.tintColor = navigationBarPreviousTintColor
+    }
     
     func setupUI() {
         timerControllerView.layer.cornerRadius =  5
-        resultField.keyboardType = .default
+        resultField.keyboardType = .decimalPad
     }
     func generateProblem() {
-        let firstDigit = Int.random(in: 0...9)
+        
+        let selectedIndex: Int = segmentedControl.selectedSegmentIndex
+        let range = ranges[selectedIndex]
+        let firstDigit = Int.random(in: range)
         let arithmeticOperators: String = ["+", "-", "*", "/"].randomElement()!
         
-        var startingInteger:Int = 0
-        var endingInteger: 
-        if arithmeticOperators  == "/" {
+        var startingInteger:Int = range.lowerBound
+        var endingInteger:  Int = range.upperBound
+        
+        if arithmeticOperators  == "/" && startingInteger == 0 {
             startingInteger = 1
+        }else if arithmeticOperators == "-"{
+            endingInteger = firstDigit
         }
-        let secondDigit = Int.random(in: startingInteger...9)
+        let secondDigit = Int.random(in: startingInteger...endingInteger)
         
         
         problemLabel.text = "\(firstDigit) \(arithmeticOperators) \(secondDigit) = "
@@ -81,7 +100,13 @@ class ViewController: UIViewController {
     @objc func updateTimerUI() {
         countDown -= 1
         
-        timerLabel.text = "00 : \(countDown)"
+        let  seconds: String = String(format: "%02d", countDown)
+        
+//        if countDown < 10 {
+//            seconds = "0\(countDown)"
+//        }
+        
+        timerLabel.text = "00 : \(seconds)"
         progressView.progress = Float(30 - countDown) / 30
         print("progressView.progress : \(progressView.progress)")
         
@@ -108,7 +133,9 @@ class ViewController: UIViewController {
         
         if newResult == result {
             print("Correct answer!")
-            score += 1
+            
+            let selectedIndex  = segmentedControl.selectedSegmentIndex
+            score += scoreAmount[selectedIndex]
             scoreLabel.text = "Score: \(score)"
         }else {
             print("Incorrect answer!")
@@ -118,6 +145,10 @@ class ViewController: UIViewController {
         resultField.text = nil
     }
     @IBAction func restartPressed(_ sender: Any) {
+        restart()
+    }
+    
+    func restart( ) {
         score = 0
         scoreLabel.text = "Score: 0"
         
@@ -127,6 +158,12 @@ class ViewController: UIViewController {
         
         resultField.isEnabled = true
         submitButton.isEnabled = true
+    }
+    
+    
+    
+    @IBAction func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        restart()
     }
 }
 
