@@ -11,7 +11,7 @@
         <!--Welcome!-->
         <scene sceneID="Avp-an-EU2">
             <objects>
-                <viewController id="l27-wi-qEq" sceneMemberID="viewController">
+                <viewController id="l27-wi-qEq" customClass="WelcomeViewController" customModule="Math_Buster" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eZF-75-ajN">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -162,7 +162,6 @@
         <!--Navigation Controller-->
         <scene sceneID="PIv-sV-iM5">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xkV-BY-7XO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="I1D-2k-ACi" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="FjU-qm-dXP">
@@ -174,6 +173,7 @@
                         <segue destination="l27-wi-qEq" kind="relationship" relationship="rootViewController" id="2XI-GO-GUv"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xkV-BY-7XO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-677.0992366412213" y="3.5211267605633805"/>
         </scene>
