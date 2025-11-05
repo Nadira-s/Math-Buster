@@ -12,18 +12,26 @@ class WelcomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+  
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getUserScore()
     }
-    */
+    
+    func getUserScore() {
+        let userDefaults = UserDefaults.standard
+        guard let userScore = userDefaults.array(forKey: ViewController.userScoreKey) else {
+            print("UserDefaults doesn't contain array with key: \(ViewController.userScoreKey)")
+            return
+        }
+        guard let userScoreArrayOfDictionary = userScore as? [[String: Any]] else {
+            print("Couldn't covert Any to [[String:Any]]")
+            return
+        }
+        
+        print("userScoreArrayOfDictionary: \(userScoreArrayOfDictionary)")
+    }
 
 }
