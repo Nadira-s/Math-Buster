@@ -30,6 +30,8 @@ class ViewController: UIViewController {
     
     var navigationBarPreviousTintColor: UIColor?
     
+    static let userScoreKey: String = "userScore"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -203,11 +205,23 @@ class ViewController: UIViewController {
         present(alertController, animated: true)
     }
     
+    
+    
+    
     func saveUserScore(name: String) {
         let userScore: [String: Any] = ["name": name, "score": score]
-        let userDefaults = UserDefaults.standard
-        userDefaults.set(userScore, forKey: "userScore")
+        let userScoreArray: [[String: Any ]] = getUserScoreArray() + [userScore]
         
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(userScoreArray, forKey: ViewController.userScoreKey)
+        
+    }
+    
+    func getUserScoreArray() ->[[String: Any]]{
+        let userDefaults = UserDefaults.standard
+        let array = userDefaults.array(forKey: ViewController.userScoreKey) as? [[String: Any]]
+        
+        return array ?? []
     }
 }
 
