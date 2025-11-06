@@ -15,8 +15,20 @@
                     <view key="view" contentMode="scaleToFill" id="eZF-75-ajN">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="YHv-zt-b2B">
+                                <rect key="frame" x="0.0" y="192" width="393" height="592"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="rAY-B8-gTf"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="rAY-B8-gTf" firstAttribute="trailing" secondItem="YHv-zt-b2B" secondAttribute="trailing" id="8D3-zH-rXh"/>
+                            <constraint firstItem="YHv-zt-b2B" firstAttribute="top" secondItem="rAY-B8-gTf" secondAttribute="top" constant="20" id="8pC-Pe-AsE"/>
+                            <constraint firstItem="rAY-B8-gTf" firstAttribute="bottom" secondItem="YHv-zt-b2B" secondAttribute="bottom" id="LjV-el-jQ8"/>
+                            <constraint firstItem="YHv-zt-b2B" firstAttribute="leading" secondItem="rAY-B8-gTf" secondAttribute="leading" id="nKY-1r-YlZ"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Welcome!" id="Qpe-Hn-et1">
                         <barButtonItem key="rightBarButtonItem" style="plain" id="3SJ-yg-gWX">
@@ -34,6 +46,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="YHv-zt-b2B" id="Ftw-42-V0Z"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HNr-Pm-jhq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
