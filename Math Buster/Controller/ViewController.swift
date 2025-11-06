@@ -19,18 +19,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultField: UITextField!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var restartButton: UIButton!
-    
     @IBOutlet weak var segmentedControl: UISegmentedControl!
-    var timer: Timer?
-    var countDown: Int = 30
-    var result: Double?
-    var score: Int = 0
-    var ranges = [0...9, 10...99, 100...999]
-    var scoreAmount = [1, 2, 3]
     
-    var navigationBarPreviousTintColor: UIColor?
+    var dataModel: ViewControllerDataModel = ViewControllerDataModel()
     
-    static let userScoreKey: String = "userScore"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +33,7 @@ class ViewController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         
-        navigationBarPreviousTintColor = navigationController?.navigationBar.tintColor
+        dataModel.navigationBarPreviousTintColor = navigationController?.navigationBar.tintColor
         navigationController?.navigationBar.tintColor = .white
     }
     
@@ -52,7 +44,7 @@ class ViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.tintColor = navigationBarPreviousTintColor
+        navigationController?.navigationBar.tintColor =  dataModel.navigationBarPreviousTintColor
     }
     
     func setupUI() {
@@ -62,7 +54,8 @@ class ViewController: UIViewController {
     func generateProblem() {
         
         let selectedIndex: Int = segmentedControl.selectedSegmentIndex
-        let range = ranges[selectedIndex]
+        let range = dataModel.ranges[selectedIndex]
+        
         let firstDigit = Int.random(in: range)
         let arithmeticOperators: String = ["+", "-", "*", "/"].randomElement()!
         
@@ -81,45 +74,41 @@ class ViewController: UIViewController {
         
         switch arithmeticOperators {
         case "+":
-            result = Double(firstDigit +  secondDigit)
+            dataModel.result = Double(firstDigit +  secondDigit)
         case "-":
-            result = Double(firstDigit -  secondDigit)
+            dataModel.result = Double(firstDigit -  secondDigit)
         case "*":
-            result = Double(firstDigit *  secondDigit)
+            dataModel.result = Double(firstDigit *  secondDigit)
         case "/":
-            result = Double(firstDigit) / Double(secondDigit)
+            dataModel.result = Double(firstDigit) / Double(secondDigit)
         default:
-            result = nil
+            dataModel.result = nil
         }
     }
     func scheduleTimer(){
-        countDown = 2
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimerUI),userInfo: nil, repeats: true)
+        dataModel.countDown = 30
+        dataModel.timer?.invalidate()
+        dataModel.timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimerUI),userInfo: nil, repeats: true)
         
     }
     
     @objc func updateTimerUI() {
-        countDown -= 1
+        dataModel.countDown -= 1
         
-        let  seconds: String = String(format: "%02d", countDown)
-        
-//        if countDown < 10 {
-//            seconds = "0\(countDown)"
-//        }
+        let  seconds: String = String(format: "%02d", dataModel.countDown)
         
         timerLabel.text = "00 : \(seconds)"
-        progressView.progress = Float(30 - countDown) / 30
+        progressView.progress = Float(30 - dataModel.countDown) / 30
         print("progressView.progress : \(progressView.progress)")
         
-        if countDown <= 0 {
+        if dataModel.countDown <= 0 {
            finishTheGame()
         }
     }
 
     @IBAction func submitPressed(_ sender: Any) {
         guard let text = resultField.text else {
-            print("Text is nill")
+            print("Text is nil")
             return
         }
         guard !text.isEmpty else {
@@ -127,16 +116,16 @@ class ViewController: UIViewController {
             return
         }
         guard let newResult = Double(text) else{
-            print("Couldn't covert text: \(text)to Double")
+            print("Couldn't convert text: \(text) to Double")
             return
         }
         
-        if newResult == result {
+        if newResult == dataModel.result {
             print("Correct answer!")
             
             let selectedIndex  = segmentedControl.selectedSegmentIndex
-            score += scoreAmount[selectedIndex]
-            scoreLabel.text = "Score: \(score)"
+            dataModel.score += dataModel.scoreAmount[selectedIndex]
+            scoreLabel.text = "Score: \(dataModel.score)"
         }else {
             print("Incorrect answer!")
         }
@@ -149,7 +138,7 @@ class ViewController: UIViewController {
     }
     
     func restart( ) {
-        score = 0
+        dataModel.score = 0
         scoreLabel.text = "Score: 0"
         
         generateProblem()
@@ -167,7 +156,7 @@ class ViewController: UIViewController {
     }
     
     func finishTheGame() {
-        timer?.invalidate()
+        dataModel.timer?.invalidate()
         resultField.isEnabled = false
         submitButton.isEnabled = false
         
@@ -176,52 +165,131 @@ class ViewController: UIViewController {
     }
     
     func askForName() {
-        let alertController = UIAlertController(title: "Game is over", message: "Save your score: \(score)", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Game is over", message: "Save your score: \(dataModel.score)", preferredStyle: .alert)
         alertController.addTextField { textField in
             textField.placeholder = "Enter your name"
         }
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
            guard  let textField = alertController.textFields?.first else {
-               print("TextFiled is absent")
+               print("TextField is absent")
                 return
             }
             guard let text = textField.text, !text.isEmpty else {
-                print("Text is nill or empty")
+                print("Text is nil or empty")
                 return
             }
             print("Name: \(text)")
             
-            self.saveUserScore(name: text)
+            self.saveUserScoreAsStruct(name: text)
+            
+            
         }
         alertController.addAction(saveAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alertController.addAction(cancelAction)
         
-//        let skipAction = UIAlertAction(title: "Skip", style: .destructive)
-//        alertController.addAction(skipAction)
-        
         present(alertController, animated: true)
     }
     
     
+    func saveUserScoreAsStruct(name: String) {
+        let userScore: UserScore = UserScore(name: name, score: dataModel.score)
+        var level: Level?
+        switch segmentedControl.selectedSegmentIndex{
+        case  0:
+            level = .easy
+        case 1:
+            level = .medium
+        case 2:
+            level = .hard
+            
+        default:
+            ()
+        }
+        
+        guard let level = level else {
+            print("Level is nil because index is out of [0,1,2]")
+            return
+        }
+        let userScoreArray: [UserScore] = ViewController.getAllUserScore(level: level) + [userScore]
+        
+        do {
+            let encoder = JSONEncoder()
+            let encodedData = try encoder.encode(userScoreArray)
+            let userDefaults = UserDefaults.standard
+            userDefaults.set(encodedData, forKey: level.key())
+        }catch{
+            print("Couldn't encode given [UserScore] into Data with error: \(error.localizedDescription)")
+        }
+    }
     
-    
+    static func getAllUserScore(level: Level) -> [UserScore] {
+        var result: [UserScore] = []
+        
+        let userDefaults = UserDefaults.standard
+        if let data = userDefaults.object(forKey: level.key()) as? Data{
+            do {
+                let decoder = JSONDecoder()
+                result = try decoder.decode([UserScore].self, from: data)
+                
+            }catch{
+                print("Couldn't decode given Data to [UserScore] with error: \(error.localizedDescription)" )
+            }
+        }
+        return result.sorted { $0.score > $1.score }
+    }
     func saveUserScore(name: String) {
-        let userScore: [String: Any] = ["name": name, "score": score]
+        let userScore: [String: Any] = ["name": name, "score": dataModel.score]
         let userScoreArray: [[String: Any ]] = getUserScoreArray() + [userScore]
         
         let userDefaults = UserDefaults.standard
-        userDefaults.set(userScoreArray, forKey: ViewController.userScoreKey)
+        userDefaults.set(userScoreArray, forKey: ViewControllerDataModel.userScoreKey)
         
     }
     
     func getUserScoreArray() ->[[String: Any]]{
         let userDefaults = UserDefaults.standard
-        let array = userDefaults.array(forKey: ViewController.userScoreKey) as? [[String: Any]]
+        let array = userDefaults.array(forKey: ViewControllerDataModel.userScoreKey) as? [[String: Any]]
         
         return array ?? []
     }
 }
 
+struct ViewControllerDataModel {
+    var timer: Timer?
+    var countDown: Int = 30
+    var result: Double?
+    var score: Int = 0
+    var ranges = [0...9, 10...99, 100...999]
+    var scoreAmount = [1, 2, 3]
+    
+    var navigationBarPreviousTintColor: UIColor?
+    
+    static let userScoreKey: String = "userScore"
+    
+}
+
+struct UserScore: Codable {
+    let name: String
+    let score: Int
+}
+
+enum Level {
+    case easy;
+    case medium;
+    case hard;
+    
+    func key() -> String {
+        switch self{
+        case .easy:
+            return "easyUserScore"
+        case .medium:
+            return "mediumUserScore"
+        case .hard:
+            return "hardUserScore"
+            
+        }
+    }
+}
